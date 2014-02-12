@@ -142,7 +142,7 @@ they get resolved into a value:
 		</tr>
 	</thead>
 	<tbody>
-	<tr><td>Relative</td><td><code>@{...last_name}</code></td><td>Look "into" self/parent/ancestor/... model object to retrieve value.  In this example, look into "grandparent" object.  <em>NOTE:</em> In contrast to the UNIX convention of using two dots per "generation", this templating omits the dots and separating slashes.</td></tr>
+	<tr><td>Relative</td><td><code>@{...last_name}</code></td><td>Look "into" self/parent/ancestor/... model object to retrieve value.  In this example, look into "grandparent" object.  <em>NOTE:</em> In contrast to the UNIX convention of using two dots per "generation", this templating system uses only one dot per generation and omits the separating slashes altogether.</td></tr>
 	<tr><td>Absolute</td><td><code>@{/last_name}</code></td><td>	Look "into" the root ancestor model object to retrieve value.</td></tr>
 	<tr><td>Named</td><td>	 <code>@{who.first_name}</code></td><td>	Look "into" a named-ancestor model object to retrieve value (assumes `who` is not an attribute of the current model, otherwise `who` gets silently shadowed!).</td></tr>
 	<tr><td>Implicit</td><td><code>@{year}</code></td><td>		Look at the current model object to retrieve value.</td></tr>
