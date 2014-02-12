@@ -18,8 +18,7 @@ Features:
 Notable limitations:
 --------------------
  -	Cannot create bare text-nodes (all instances of templates are elements).
- -	Cannot create a variable number of attributes or any attributes with
- -	any part of its name taken from a template variable.
+ -	Cannot create a variable number of attributes or any attributes with any part of its name taken from a template variable.
 
 Trivial Example:
 ----------------
