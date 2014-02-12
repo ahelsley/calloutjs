@@ -278,11 +278,11 @@ Some functions use the `cache` part of the frames stack.  This an object
 where variable name-lookups are remembered for fast access later while in
 the same template.
 
-// Open questions:
-//	Template elements can have pre and post instantiation as well as "load" hooks:
-//		<li ...  pre="alert('about to instantiate subtemplates!')"
-//				 post="alert('finished instantiating subtemplates!')"> ...
-//
+	// Open questions:
+	//	Template elements can have pre and post instantiation as well as "load" hooks:
+	//		<li ...  pre="alert('about to instantiate subtemplates!')"
+	//				 post="alert('finished instantiating subtemplates!')"> ...
+	//
 
 Initial Revision History:
 =========================
