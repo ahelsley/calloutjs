@@ -170,8 +170,9 @@ Some references to variables are actually common transformations of model-attrib
 	</tbody>
 </table>
 
-Dereferencing:
-==============
+Iterating Over Non-`Array` Collections:
+=======================================
+The sigils `*`, `^`, and `$` are used to tell the templating system to extract the values of an objects properties into an array (`*` just extracts values, `^` extracts the names of the properties and produces an array of {name:..., value:...} pairs), and `$` sorts the array respectively.  The so-extracted values can then be used with the `<... foreach= ...>` iteration constructs.  They may be combined, though not all combinations are anticipated to be useful.
 
 <table>
 	<thead><tr>	<th>Syntax</th>
@@ -179,8 +180,8 @@ Dereferencing:
 		</tr>
 	</thead>
 	<tbody>
-	<tr><td><code>*@{<var>[<kbd>NAME</kbd>.]</var>}</code></td><td>????</td></tr>
-	<tr><td><code>^@{<var>[<kbd>NAME</kbd>.]</var>}</code></td><td>????</td></tr>
+	<tr><td><code>*@{<var>[<kbd>NAME</kbd>.]</var>}</code></td><td>Extract object-property values into an array.</td></tr>
+	<tr><td><code>^@{<var>[<kbd>NAME</kbd>.]</var>}</code></td><td>Extract object-property names and values into an array of `{name:..., value:...}` pairs.</td></tr>
 	<tr><td><code>$@{<var>[<kbd>NAME</kbd>.]</var>}</code></td><td>`$`ort</td></tr>
 	</tbody>
 </table>
@@ -277,11 +278,11 @@ Some functions use the `cache` part of the frames stack.  This an object
 where variable name-lookups are remembered for fast access later while in
 the same template.
 
-// Open questions:
-//	Template elements can have pre and post instantiation as well as "load" hooks:
-//		<li ...  pre="alert('about to instantiate subtemplates!')"
-//				 post="alert('finished instantiating subtemplates!')"> ...
-//
+	// Open questions:
+	//	Template elements can have pre and post instantiation as well as "load" hooks:
+	//		<li ...  pre="alert('about to instantiate subtemplates!')"
+	//				 post="alert('finished instantiating subtemplates!')"> ...
+	//
 
 Initial Revision History:
 =========================
