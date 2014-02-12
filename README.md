@@ -4,12 +4,12 @@ calloutjs
 A tiny but highly-functional client-side Javascript templating engine for JSON data/JavaScript data structures.
 
 Features:
---------------------
+---------
  -	Dynamic creation of DOM objects
- -	Relative, absolute, named, implicit, and direct styles for [references to model attributes](#here)
- -	Retains references to the templates instances are created from
- -	Retains of references to model objects (bare JS Objects) in the view
- -	Retains of references to view instances from the model objects
+ -	Relative, absolute, named, implicit, and direct [styles for references](#refstyles) to model attributes
+ -	Retains references to the [template](#template)s that [instance](#instance)s are created from
+ -	Retains of references to [model](#model) objects (bare JS Objects) in the view
+ -	Retains of references to [view](#view) instances from the model objects
  -	Recursive template invocation via `<... reapply= ...>`.  Name the template to be `<... reapply= ...>`d...
  	- ... explicitly
  	- ... indirectly (using "relative" names, i.e.: `<... reapply=".." ...>`)
@@ -133,7 +133,7 @@ with variable names.  Here is a table of the names we are assigning to these
 methods, the example that illustrates their use, and a description of how
 they get resolved into a value:
 
-<a name="here"></a>
+<a name="refstyles"></a>
 
 <table>
 	<thead><tr>	<th>Method</th>
@@ -171,7 +171,7 @@ Some references to variables are actually common transformations of model-attrib
 </table>
 
 Dereferencing:
-==================
+==============
 
 <table>
 	<thead><tr>	<th>Syntax</th>
@@ -218,11 +218,27 @@ can jump to the debugger at a particular point in your template tree by
 inserting a `#` as the first letter of your `foreach` attribute or the
 first letter of any attribute name.
 
-### Motivating templating output patterns:
+Glossary:
+=========
+<a name="template"></a>	<dt>template</dt>:	<dd>A template is ...</dd>
+<a name="model"></a>	<dt>model</dt>:		<dd>Domain object model</dd>
+<a name="instance"></a>	<dt>instance</dt>:	<dd>template + model</dd>
+<a name="view"></a>	<dt>view</dt>:		<dd>template + model, as linked from the model</dd>
+<a name="frame"></a>	<dt>frame</dt>:		<dd></dd>
+<a name="hook"></a>	<dt>hook</dt>:		<dd></dd>
+<a name="handler"></a>	<dt>handler</dt>:	<dd>see [hook](#hook)</dd>
+
+Motivating templating output patterns:
+======================================
 
 <table>
 	<thead>
+		<tr>	<th>Implemented?</th>
+			<th>Name</th>
+			<th>Alternate Name</th>
+		</tr>
 	</thead>
+	<tbody>
 <tr><td> </td><td colspan="2">white-space erosion left and/or right, internal and/or external, unconditional/conditional upon {,non-}existence of {,left,right,internal} content</td></tr>
 <tr><td>x</td><td>&lt;multiple&gt;/&lt;list&gt;-item separator	</td><td>output-if-not-last-item</td></tr>
 <tr><td> </td><td>field-separator			</td><td>output-if-immediate-siblings-not-empty</td></tr>
@@ -230,18 +246,19 @@ first letter of any attribute name.
 <tr><td> </td><td>implicit-output			</td><td>output-if-not-same-as-last-row</td></tr>
 <tr><td> </td><td>output-if-not-empty with/without prefix and/or suffix</td></tr>
 <tr><td> </td><td>output-if-empty with/without prefix and/or suffix</td></tr>
+	</tbody>
 </table>
 
 IMPLEMENTATION NOTES:
 =====================
-Many functions below accept a 'context' parameter.  'context[i].explicit' is
-where the objects bound to the variables named with 'foreach' are kept for
-easy named-reference in sub-templates. 'context' itself is used for
+Many functions below accept a `context` parameter.  `context[i].explicit` is
+where the objects bound to the variables named with `foreach` are kept for
+easy named-reference in sub-templates. `context` itself is used for
 resolving relative references.  It is an array of frames.  Frame 0 has
 references to the most-recent model object being used to populate the
-current instance of the current template ('context[0].model'), a reference
+current instance of the current template (`context[0].model`), a reference
 to the object used to track explicitly-named frame references
-('context[0].explicit'), a cache for speeding up reference resolution in the
+(`context[0].explicit`), a cache for speeding up reference resolution in the
 frame, and references to the instance and the template used to create the
 instance during the lifetime of the frame.  Also included are references to
 the collection (if any) from which the model object was retrieved during
@@ -256,7 +273,7 @@ before looking in the named frames.  This is in line with the principle of
 obeying locally controlled and defined names before more distantly defined
 ones.
 
-Some functions use the 'cache' part of the frames stack.  This an object
+Some functions use the `cache` part of the frames stack.  This an object
 where variable name-lookups are remembered for fast access later while in
 the same template.
 
