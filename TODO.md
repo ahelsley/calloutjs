@@ -2,6 +2,8 @@
 			stacking frames.  Finish documenting event handlers 'pre',
 			'post', and 'load'.
 
+- Document `.onModelChange`?
+
 - Add modifying punctuation to allow concise ways of dealing with the
 			motivating templating output patterns listed ****below****.  Consider
 			using .{next,previous}Sibling to implement.
