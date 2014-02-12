@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Client-side Template Test</title>
+	<link rel="stylesheet" type="text/css" href="../callout.css" />
+	<script type="text/javascript" src="../callout.js"></script>
+	<script type="text/javascript" src="model.js"></script>
+</head>
+<body>
+	<!-- Indentation kept so examples can be compared directly to examples embedded in templates.js -->
+
+	<!-- Simple -->
+	<span class="example">
+		<h2>Simple</h2>
+		<div>
+			<ul><li id="ta" foreach="who" in="artists">@{who}</li></ul>
+			<script type="text/javascript">
+			var artists = ['Elvis Presley', 'Bon Jovi', 'U2'];
+			instantiateTemplate($$('ta'));
+			</script>
+		</div>
+	</span>
+
+	<!-- Simple but sorted and located via querySelector() -->
+	<span class="example">
+		<h2>Sorted</h2>
+		<div>
+			<ul id="tb"><li foreach="who" in="$artists">@{who}</li></ul>
+			<script type="text/javascript">
+			var artists = ['Elvis Presley', 'Bon Jovi', 'U2'];
+			instantiateTemplate($$('tb').querySelector('li'));
+			</script>
+		</div>
+	</span>
+
+	<span class="example">
+		<h2>Matrix</h2>
+		<div>
+			<table rules="groups">
+				<tbody>
+					<tr id="tr" foreach="row" in="matrix">
+						<td foreach="cell" in="row">
+							@{cell}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<script type="text/javascript">
+			var matrix = [
+				[1, 2, 3, 4],
+				[5, 6, 7, 8],
+				[9, 8, 7, 6],
+				[5, 4, 3, 2]
+			];
+			instantiateTemplate($$('tr'));
+			</script>
+		</div>
+	</span>
+
+	<span class="example">
+		<h2>Matrix</h2>
+		<div>
+			<table rules="groups">
+				<tbody id="mtrix" />
+			</table>
+			<script type="text/javascript">
+			$$('mtrix').instantiate($$('tr'));	// This time around each number is a Number() instance!
+			</script>
+		</div>
+	</span>
+
+	<!-- Complex -->
+	<span class="example">
+		<h2>Complex</h2>
+		<div>
+			<ul id="tc">
+				<li foreach="who" of="artists" genid="{@{last_name},@{first_name}}">
+					@{.last_name}, @{who.first_name}
+					<ul><li foreach="album" in="*$albums">
+							@{who.first_name} created @{album.title}
+							in @{year} containing
+							@{album.tracks.length} track@{album.tracks.$}.
+							<span foreach="n_minutes" in="album.tracks" title="@{who.first_name} @{...last_name}">
+								<br />Track #@{@} of @{#} track@{$} is
+								<b title="@{/last_name} @{who.first_name}">@{n_minutes}</b>
+								minute@{n_minutes.$} long@{,}
+							</span>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<script type="text/javascript">
+			instantiateTemplate($$('tc').querySelector('li'), richArtists);
+			</script>
+		</div>
+	</span>
+
+	<span class="example">
+		<h2>Recursive</h2>
+		<div>
+			<!-- Recursive -->
+			<ul><li id="td" foreach="member" in="family">
+					@{name}
+					<ul><li reapply="member" to="children" /></ul>
+				</li>
+			</ul>
+			<script type="text/javascript">
+			instantiateTemplate($$('td'));
+			</script>
+		</div>
+	</span>
+
+	<span class="example">
+		<h2>Recursive via relative (<code>&lt;&hellip; reapply="." &hellip;&gt;</code>)</h2>
+		<div>
+			<!-- Recursive -->
+			<ol><li id="te" foreach="member" in="family">
+					@{name}
+					<ol><li reapply="." to="children" /></ol>
+				</li>
+			</ol>
+			<script type="text/javascript">
+			instantiateTemplate($$('te'));
+			</script>
+		</div>
+	</span>
+
+	<!-- =================================================================== -->
+	<!-- =================================================================== -->
+	<style type="text/css">
+		span.example {
+			display:		inline-table;
+			vertical-align:	top;
+		}
+	</style>
+</body>
+</html>
