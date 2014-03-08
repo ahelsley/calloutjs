@@ -81,7 +81,7 @@ Example 3:
 
  -	HTML (view):
  >		<ul id="tc">
- >			<li foreach="who" of="artists" genid="{@{last_name},@{first_name}}">
+ >			<li foreach="who" of="artists" :id="{@{last_name},@{first_name}}">
  >				@{.last_name}, @{who.first_name}
  >				<ul><li foreach="album" in="*$albums">
  >						@{who.first_name} created @{album.title}
@@ -217,6 +217,16 @@ Some browsers support a `debugger` keyword/operator.  In this case, you
 can jump to the debugger at a particular point in your template tree by
 inserting a `#` as the first letter of your `foreach` attribute or the
 first letter of any attribute name.
+
+Gotchas:
+========
+If you need to put a variable into a `src=`, `href=` (in a `<link>`), or other
+attribute which is automatically used by the browser, be sure to hide it from
+the browser by prefixing it with a `:`.  For example, this should help prevent
+the browser from automatically retrieving an image at the url
+`@{person.portrait_url}` or creating a DOM id for an element with
+`id="@{person.id}"`.  The sample code above does this with
+`:id="{@{last_name},@{first_name}}"`.
 
 Glossary:
 =========

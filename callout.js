@@ -40,7 +40,7 @@ function TemplateInstances(template, collection, context, parentView) {
 function instantiateTemplate(template, collection, context, parentView, do_not_reveal_p) {
 	var instances	= [];
 
-	////////////////////////////////////////////////////////////////////////////
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	template		= template ? resolve(template) : template;
 	if(!template)	return instances;
 
@@ -51,17 +51,17 @@ function instantiateTemplate(template, collection, context, parentView, do_not_r
 		modelName = modelName.substring(1);
 	}
 
-	////////////////////////////////////////////////////////////////////////////
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	context = context || [new Frame(null, global)];
 
-	////////////////////////////////////////////////////////////////////////////
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	// Use template's parentNode as parentView if no parentView is passed
 	// explicitly to instantiateTemplate call
 	parentView		= (parentView
 					   ? resolve(parentView)
 					   : (template.parentForInstances ||template.parentNode));
 
-	////////////////////////////////////////////////////////////////////////////
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	// Use data specified in template if it is not passed explicitly to
 	// instantiateTemplate call
 	if(collection === undefined) {
@@ -80,7 +80,7 @@ function instantiateTemplate(template, collection, context, parentView, do_not_r
 	}
 	collection.views.push$(parentView);
 
-	////////////////////////////////////////////////////////////////////////////
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	// Store the collection as the model in the parentView in 2 ways.
 	if(parentView) {
 		if(parentView.collections === undefined) {
@@ -92,7 +92,7 @@ function instantiateTemplate(template, collection, context, parentView, do_not_r
 		parentView.model = collection;
 	}
 
-	////////////////////////////////////////////////////////////////////////////
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	// For each value in collection array:
 	var j = 0;
 	for(var i = 0; i < collection.length; i++) {
@@ -266,17 +266,19 @@ function onModelChange() {
 	// remove this view from the list of views attached to this.model
 	if(this.model && Array.isArray(this.model.views)) {
 		var views = this.model.views;
+		views.remove(this);			// Use the Array function we added below
+		/*-
 		for(var i = 0; i < views.length; i++) {
 			var view = views[i];
 			if(this === view) {
 				views.splice(i, 1);	// remove the view from the array
 				//-break;			// don't break in case view gets added more than once -- array should be very small
 			}
-		}
+		} -*/
 	}
 
 	// use this.template and this.model to re-create the view
-	//TODO// save context so this can be re-created properly?
+	//TODO// save context before this happens so this can be re-created properly?
 	var newInstance = instantiateTemplateOnce(this.template,
 											  this.model,
 											  (this.context
@@ -495,6 +497,10 @@ function substituteChildren(context, instance) {
 
 		if(attribute.name.charAt(0) === '#') {		// support breakpoints in any element of a template (non-standard XML to have '#' in attribute name?)
 			debugger;
+			this.removeAttribute(attribute.name);
+		} else if(attribute.name.charAt(0) === ':') {// a generated attribute
+			var newName = attribute.name.substring(1);
+			this.setAttribute(newName, attribute.value);
 			this.removeAttribute(attribute.name);
 		}
 	}
@@ -723,12 +729,12 @@ function resolveValueOfTemplateVariable(variableName, context) {
 	return undefined;
 }
 
-function newEmptyContext() {
-	return [new Frame(null, {})];
-}
+function newContext(frame) { return [frame]; }
+function newEmptyContext() { return [new Frame(null, {})]; }
 
 function Frame(that, model) {
 	if(that !== undefined && typeof(that) === 'object') {
+		// this is the "copy constructor"
 		for(var p in that) {
 			if(that.hasOwnProperty(p)) {
 				this[p] = that[p];
