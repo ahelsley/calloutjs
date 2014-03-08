@@ -265,16 +265,7 @@ function appendInstances(instances, parentView, reveal_p) {
 function onModelChange() {
 	// remove this view from the list of views attached to this.model
 	if(this.model && Array.isArray(this.model.views)) {
-		var views = this.model.views;
-		views.remove(this);			// Use the Array function we added below
-		/*-
-		for(var i = 0; i < views.length; i++) {
-			var view = views[i];
-			if(this === view) {
-				views.splice(i, 1);	// remove the view from the array
-				//-break;			// don't break in case view gets added more than once -- array should be very small
-			}
-		} -*/
+		this.model.views.removeAll(this);
 	}
 
 	// use this.template and this.model to re-create the view
@@ -285,7 +276,6 @@ function onModelChange() {
 											   ||newEmptyContext()),
 											  this.collection,
 											  this.n);
-
 	// replace this view with the new one
 	if(this.parentNode) {
 		this.parentNode.replaceChild(newInstance, this);
@@ -780,11 +770,12 @@ Object.defineProperty(Number.prototype, '$',	{ get: function() { return conditio
 Object.defineProperty(Array.prototype, '$',		{ get: function() { return conditionalPluralSuffix(this.length); } });
 Object.defineProperty(Array.prototype, '#',		{ get: function() { return this.length; } });
 Object.defineProperty(Array.prototype, 'size',	{ get: function() { return this.length; } });
-Array.prototype.remove = function(obj) {
+Array.prototype.removeAll = function(obj) {		// Remove all instances of 'obj' from the array
 	for(var i = this.indexOf(obj); i >= 0; i = this.indexOf(obj)) {
 		this.splice(i, 1);
 	}
 };
+
 Array.prototype.push$ = function(obj) { if(this.indexOf(obj) < 0) { this.push(obj); } };
 
 ////////////////////////////////////////////////////////////////////////////////
