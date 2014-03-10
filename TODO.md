@@ -2,6 +2,10 @@
 			stacking frames.  Finish documenting event handlers 'pre',
 			'post', and 'load'.
 
+- Add output of examples into `README.md`.
+
+- Make sure collections get associated with the parentView and template that was used to iterate over the collection.  PROBLEM: what about cases like `<ul><li (template)>...</li>  <li (another template)>...</li></ul>` where the developer combines two collections into 1 view?
+
 - Document `.onModelChange`?
 
 - Improve documentation by better-describing what is meant (and an example where the feature is useful) in the README.md's "Naming" section where it is written:
