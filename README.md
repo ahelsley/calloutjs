@@ -19,7 +19,9 @@ Notable limitations:
 --------------------
  -	Cannot create bare text-nodes (all instances of templates are elements).
  -	Cannot create a variable number of attributes or any attributes with any part of its name taken from a template variable.
+ -	Does not allow attributes with "." or other "funny" characters in them.
 
+<a name="example-1"></a>
 Trivial Example:
 ----------------
  -	HTML (view):
@@ -31,6 +33,7 @@ Trivial Example:
  -	Javascript initialization:
  >		instantiateTemplate(ta);
 
+<a name="example-2"></a>
 Example 2:
 ----------
  -	HTML (view):
@@ -53,6 +56,7 @@ Example 2:
  -	Javascript initialization:
  >		instantiateTemplate(tr);
 
+<a name="example-3"></a>
 Example 3:
 ----------
  -	JSON (model):
@@ -102,7 +106,7 @@ Example 3:
 
 ### Naming:
 
-Notice that the collections in the complex example above are referenced at
+Notice that the collections in the [Example 3](#example-3) above are referenced at
 the `<li>` level, but it is nice to push the actual object out of the
 template up to the "model" attribute of the enclosing `<ul>` so that there
 is a view and model for the list as a whole as well.
@@ -127,7 +131,7 @@ Notice the conventions for associating JSON data with templates:
 	first template use.  In web browsers, this is the "window" object,
 	where all global variables are defined.
 
-Notice in `Example 3` above the ways in which model-values can be referenced
+Notice in [Example 3](#example-3) above the ways in which model-values can be referenced
 with variable names.  Here is a table of the names we are assigning to these
 methods, the example that illustrates their use, and a description of how
 they get resolved into a value:
@@ -144,10 +148,15 @@ they get resolved into a value:
 	<tr><td>Relative</td><td><code>@{...last_name}</code></td><td>Look "into" self/parent/ancestor/... model object to retrieve value.  In this example, look into "grandparent" object.  <em>NOTE:</em> In contrast to the UNIX convention of using two dots per "generation", this templating system uses only one dot per generation and omits the separating slashes altogether.</td></tr>
 	<tr><td>Absolute</td><td><code>@{/last_name}</code></td><td>	Look "into" the root ancestor model object to retrieve value.</td></tr>
 	<tr><td>Named</td><td>	 <code>@{who.first_name}</code></td><td>	Look "into" a named-ancestor model object to retrieve value (assumes `who` is not an attribute of the current model, otherwise `who` gets silently shadowed!).</td></tr>
-	<tr><td>Implicit</td><td><code>@{year}</code></td><td>		Look at the current model object to retrieve value.</td></tr>
+	<tr><td>Implicit</td><td><code>@{year}</code></td><td>		Look at the current model object to retrieve value.  This is identical in effect to <code>@{.year}</code></td></tr>
 	<tr><td>Direct</td><td>	 <code>@{n_minutes}</code></td><td>	The current model *is* the value.</td></tr>
 	</tbody>
 </table>
+Notice there is an inherent ambiguity between direct, implicit, and named reference styles.  The engine cannot tell if the un-qualified name `@{x}` refers *directly* to a model OR *implicity* to a model's attribute that is named `x`.  In the case of a reference like `@{x.y}`, the engine cannot tell if the name refers to the attribute `y` of an explicitly-*named* object called `x` OR to the attribute `y` of the object `x` that is an attribute of the *implicit* model.
+
+This problem is sometimes referred to as namespace "shadowing" or "collision".  This ambiguity is resolved by looking in the most context-specific place for each name before less-specific places.  For example, if the model itself is named `n_minutes` (*and* it is of *primitive* type!), then `@{n_minutes}` refers to the value of the object itself.  This will be the value that is referenced even if there was another object that was explicitly *named* `n_minutes` during template instantiation.
+
+In order of decreasing ability to shadow other references, the styles are *direct*, *implicit*, and *named*.
 
 Special "variables":
 ==================
@@ -171,7 +180,7 @@ Some references to variables are actually common transformations of model-attrib
 
 Iterating Over Non-`Array` Collections:
 =======================================
-The sigils `*`, `^`, and `$` are used to tell the templating system to extract the values of an objects properties into an array (`*` just extracts values, `^` extracts the names of the properties and produces an array of {name:..., value:...} pairs), and `$` sorts the array respectively.  The so-extracted values can then be used with the `<... foreach= ...>` iteration constructs.  They may be combined, though not all combinations are anticipated to be useful.
+For the purposes of iteration with `<... foreach= ... in= ...>` , the sigils `*`, `^`, and `$` are used inside the `in=` attribute to tell the templating system to extract the values of an object's properties into an array.  `*` just extracts values, `^` extracts the names of the properties and produces an array of {name:..., value:...} pairs, and `$` sorts the array respectively.  They may be combined, though not all combinations are promised to be useful or understood by the template system.  [Example 3](#example-3) above demonstrates this with: `<li foreach="album" in="*$albums">`.
 
 <table>
 	<thead><tr>	<th>Syntax</th>
@@ -179,12 +188,13 @@ The sigils `*`, `^`, and `$` are used to tell the templating system to extract t
 		</tr>
 	</thead>
 	<tbody>
-	<tr><td><code>*@{<var>[<kbd>NAME</kbd>.]</var>}</code></td><td>Extract object-property values into an array.</td></tr>
-	<tr><td><code>^@{<var>[<kbd>NAME</kbd>.]</var>}</code></td><td>Extract object-property names and values into an array of `{name:..., value:...}` pairs.</td></tr>
-	<tr><td><code>$@{<var>[<kbd>NAME</kbd>.]</var>}</code></td><td>`$`ort</td></tr>
+	<tr><td><code>*<var>[<kbd>NAME</kbd>.]</var></code></td><td>Extract object-property values into an array.</td></tr>
+	<tr><td><code>^<var>[<kbd>NAME</kbd>.]</var></code></td><td>Extract object-property names and values into an array of `{name:..., value:...}` pairs.</td></tr>
+	<tr><td><code>$<var>[<kbd>NAME</kbd>.]</var></code></td><td>`$`ort</td></tr>
 	</tbody>
 </table>
 
+<a name="example-4"></a>
 Tree (Recursive) Example:
 -------------------------
  -	HTML (view):
