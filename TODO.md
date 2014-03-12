@@ -1,8 +1,12 @@
+- Document motivations: MVC, client-side templating, template anti-patterns, ...
+
 - Document the conceptual model of templates, models, instantiation, and
-			stacking frames.  Finish documenting event handlers 'pre',
-			'post', and 'load'.
+			stacking frames.  Finish documenting event handlers `pre`,
+			`post`, and `load`.
 
 - Add output of examples into `README.md`.
+
+- Add ability of `<... reapply ...>` to hide empty parent-view DOM nodes with `display:none`.
 
 - Make sure collections get associated with the parentView and template that was used to iterate over the collection.  PROBLEM: what about cases like `<ul><li (template)>...</li>  <li (another template)>...</li></ul>` where the developer combines two collections into 1 view?
 
