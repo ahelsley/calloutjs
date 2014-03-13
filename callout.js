@@ -1,5 +1,5 @@
-var global						= window;	// the "global" frame
-var maxDeferredDOMInsertions	= 20;
+/* @const */ var global						= window;	// the "global" frame
+/* @const */ var maxDeferredDOMInsertions	= 20;
 
 ////////////////////////////////////////////////////////////////////////////////
 //						 ____        _     _ _
@@ -11,8 +11,12 @@ var maxDeferredDOMInsertions	= 20;
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
-// Invocation style:
-//	parent.instantiate(template, collection, ...);
+// Invocation style:	parent.instantiate(template, collection, ...);
+/* @param {!Node}			template		The template to instantiate.
+ * @param {!Array|!Object}	collection		The collection to iterate over.
+ * @param {?Array.<Frame>=}	context			The PARENT context to resolve references in.  Top-level invocations can/should leave this null or un-specified.
+ * @return {Array.<Node>}					An array of views of collection items.
+ */
 HTMLElement.prototype.instantiate = function(template, collection, context) {
 	var instances = instantiateTemplate(template, collection, context, this);
 	invokeLoadHandlers(instances);
@@ -21,6 +25,12 @@ HTMLElement.prototype.instantiate = function(template, collection, context) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Invocation style:	var i = new TemplateInstances(template, collection, ...);
+/* @param {!Node}			template		The template to instantiate.
+ * @param {!Array|!Object}	collection		The collection to iterate over.
+ * @param {?Array.<Frame>}	context			The PARENT context to resolve references in.  Top-level invocations can/should leave this null or un-specified.
+ * @param {!Node}			parentView		The view to append template instances (views) to.
+ * @return {Array.<Node>}					An array of views of collection items.
+ */
 function TemplateInstances(template, collection, context, parentView) {
 	return parentView.instantiate(template, collection, context);
 }
@@ -37,6 +47,13 @@ function TemplateInstances(template, collection, context, parentView) {
 // consequences of this responsibility over iteration are the maintenance of the
 // special variables (',', '@', '#', ...) and that the return value is an array
 // instances instead of a single instance as it is for instantiateTemplateOnce.
+/* @param {?Node}			template		The template to instantiate.
+ * @param {?Array|?Object=}	collection		The collection to iterate over.
+ * @param {?Array.<Frame>=}	context			The PARENT context to resolve references in.  Top-level invocations can/should leave this null or un-specified.
+ * @param {?Node=}			parentView		The view to append template instances (views) to.
+ * @param {?boolean=}		do_not_reveal_p	Embargo the instances after they are appended?
+ * @return {Array.<Node>}					An array of views of collection items.
+ */
 function instantiateTemplate(template, collection, context, parentView, do_not_reveal_p) {
 	var instances	= [];
 
@@ -150,6 +167,13 @@ function instantiateTemplate(template, collection, context, parentView, do_not_r
 // This does NOT put the instance in the DOM and should not use the DOM to
 // connect with elements outside the template.  All of that should be done in
 // "instantiateTemplate" via appendInstances(...).
+/* @param {!Node}			template		The template to instantiate.
+ * @param {!Object}			model			The model object to put into the new top Frame (for resolving unqualified references).
+ * @param {?Array.<Frame>}	context			The PARENT context to resolve references in.
+ * @param {?Array|?Object}	collection		The collection to iterate over.
+ * @param {?number}			n				The number of items in the collection.
+ * @return {Node}							The template instance (view) that was created.
+ */
 function instantiateTemplateOnce(template, model, context, collection, n) {
 	var instance = template.cloneNode(true);		//	copy the template
 	instance.template	= template;
@@ -233,6 +257,7 @@ function instantiateTemplateOnce(template, model, context, collection, n) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Remove all of the things that cause an instance to be hidden as a template.
+/* @param {!Node} instance	The template instance (view) to reveal. */
 function revealInstance(instance) {
 	instance.removeAttribute('foreach');
 	instance.removeAttribute('in');
@@ -246,6 +271,11 @@ function revealInstance(instance) {
 
 // Append instances of a template to a view.  Returns a count of the number
 // appended.
+/* @param {!Array.<Nodes>}	instances		Template instances (views) to append to a parent view.
+ * @param {!Node}			parentView		The view to append template instances (views) to.
+ * @param {?boolean=}		reveal_p		Reveal the instances after they are appended?
+ * @return {number}							The number of instances appended (not always == instasnces.length?!).
+ */
 function appendInstances(instances, parentView, reveal_p) {
 	if(!Array.isArray(instances)) { instances = [instances]; }
 	var i = 0;
@@ -262,6 +292,7 @@ function appendInstances(instances, parentView, reveal_p) {
 }
 
 // An event handler that should be called whenever a view's model data is changed
+/* @this {!Node} The view object which had its model change. */
 function onModelChange() {
 	// remove this view from the list of views attached to this.model
 	if(this.model && Array.isArray(this.model.views)) {
@@ -282,6 +313,7 @@ function onModelChange() {
 	}
 }
 
+/* @param {!Object} model The model object that changed. */
 function sendModelChange(model) {
 	if(!Array.isArray(model.views)) {
 		return;
@@ -304,9 +336,13 @@ function sendModelChange(model) {
 ////////////////////////////////////////////////////////////////////////////////
 
 //TODO// use connectors to populate the special delimiter variable ','
-var connectors					= ['pre', 'after-first', 'between-each', 'before-last', 'post'];
-var connectors					= ['', ', ', ', ', ' and ', ''];
+/* @const */ var connectors	= ['pre', 'after-first', 'between-each', 'before-last', 'post'];
+/* @const */ var connectors	= ['', ', ', ', ', ' and ', ''];
 
+/* @param {!Node}			instance		The template instance (view) to invoke the handler on.
+ * @param {!string}			handlerName		The name of the handler to invoke.
+ * @return {boolean=}						Continue processing event?
+ */
 function invokeHandler(instance, handlerName) {
 	var template = instance.template;
 
@@ -327,6 +363,9 @@ function invokeHandler(instance, handlerName) {
 	return true;
 }
 
+/* @param {!Node}			instance		The template instance (view) to invoke the handler on.
+ * @param {!string}			handlerName		The name of the handler to invoke.
+ */
 function bindHandler(instance, handlerName) {
 	var template = instance.template;
 
@@ -353,6 +392,7 @@ function bindHandler(instance, handlerName) {
 
 // Invoke the load "event" handlers on a tree of template instances and
 // sub-instances.
+/* @param {!Array.<Nodes>}	instances */
 function invokeLoadHandlers(instances) {
 	for(var i = 0; i < instances.length; i++) {
 		var instance = instances[i];
@@ -367,7 +407,7 @@ function invokeLoadHandlers(instances) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Given the a template, extract its 'in' or 'of' attribute and lookup the
+// Given the template, extract its 'in' or 'of' attribute and lookup the
 // resulting variable's value if the attribute was a string.
 //
 // The sigils '*', '^', and '$' are used to tell the templating system to
@@ -377,6 +417,12 @@ function invokeLoadHandlers(instances) {
 //
 // If the attribute is not a string or array, an attempt may be made to convert
 // it into an array, possibly by wrapping it as a 1-element array.
+/* @hassideeffects								Updates to `context`, `template`, ...
+ * @param {!Node}			template
+ * @param {!Array.<Frame>}	context
+ * @param {?string}			collectionAttributeName
+ * @return {Array.<Object>}						The objects to be iterated over.
+ */
 function getCollectionForTemplate(template, context, collectionAttributeName) {
 	var iterate_object_properties_p	= false;
 	var collect_names_and_values_p	= false;
@@ -406,7 +452,7 @@ function getCollectionForTemplate(template, context, collectionAttributeName) {
 		// is that the template gets cloned so we have no easy way of checking
 		// for sameness.  Another confounding factor is that 'template' could be
 		// the 'restartAtTemplate' instead of the 'reapply' stub.
-		var previousInvocationLevel = 1;
+		/* @const */ var previousInvocationLevel = 1;
 		context = context.slice(0, previousInvocationLevel);
 	}
 
@@ -465,6 +511,12 @@ function getCollectionForTemplate(template, context, collectionAttributeName) {
 
 // Substitute all of the references to model and context variables in a template
 // instance pointed to by 'this'.
+/* @hassideeffects							Updates to data in `context` and `this`.
+ * @param {!Array.<Frame>}	context			The context to resolve references in.
+ * @param {!Node}			instance		The template instance (view) to substitute all of the references in.
+ * @this {!Node}							//TODO// isn't this the same as instance???
+ * @return {Array.<Node>}					The uninstantiated sub-templates
+ */
 function substituteChildren(context, instance) {
 	var uninstantiatedTemplates	= [];
 	var idAttribute				= undefined;
@@ -601,9 +653,9 @@ function substituteChildren(context, instance) {
 ////////////////////////////////////////////////////////////////////////////////
 // Replace references to variable values in 'text' with their values found in
 // the current context.
-var referenceRE			= /@{([\[\]\/<>()*.:a-zA-Z0-9_,@#$]+?)}/g;	//TODO// make this more restrictive?
-var erosionControlRE	= "[\\[\\]<>()*]*";	// Character class for: []<>()*		NOTE: do not use {}
-var parseReferenceRE	= new RegExp("^"
+/* @const */ var referenceRE		= /@{([\[\]\/<>()*.:a-zA-Z0-9_,@#$]+?)}/g;	//TODO// make this more restrictive?
+/* @const */ var erosionControlRE	= "[\\[\\]<>()*]*";	// Character class for: []<>()*		NOTE: do not use {}
+/* @const */ var parseReferenceRE	= new RegExp("^"
 	+"("+erosionControlRE+")"					// leading internal/external {,h,v?}space/element erosion control
 	+"("										// relative reference clause
 	+	"(\\/?)"								// absolute reference
@@ -618,6 +670,11 @@ var parseReferenceRE	= new RegExp("^"
 	+")"
 	+"("+erosionControlRE+")"					// trailing internal/external {,h,v?}space/element erosion control
 +"$");
+/* @hassideeffects							Updates to data in `context`
+ * @param {!string}			text			The text to find an substitute references in.
+ * @param {!Array.<Frame>}	context			The context to resolve references in.
+ * @return {!string}						The text with all substitutions performed.
+ */
 function substituteInText(text, context) {
 	//TODO// Consider compiling chunks and saving somehow with the template or in a global structure and/or as a function.
 	//			Using setAttribute to save the chunks with the elements can help preserve them, but it may not help for non-element objects
@@ -660,6 +717,11 @@ function substituteInText(text, context) {
 ////////////////////////////////////////////////////////////////////////////////
 // Resolve the value of a variable given a context, keeping the result in a
 // cache for fast repeated access when the same exact name is used later.
+/* @hassideeffects							Updates to data in `context`
+ * @param {!string}			variableName	The name of the variable/attribute to lookup.
+ * @param {!Array.<Frame>}	context			The context to resolve references in.
+ * @return {?Object}						The value of the fully-resolved reference.
+ */
 function resolveValueOfTemplateVariableCached(variableName, context) {
 	if(context[0].cache[variableName] === undefined) {
 		context[0].cache[variableName] = resolveValueOfTemplateVariable(variableName, context);
@@ -675,6 +737,11 @@ function resolveValueOfTemplateVariableCached(variableName, context) {
 // 'frames.explicit'.  If the name cannot be found in the top or
 // frames.explicit, then deeper layers are searched until a mapping is found or
 // we run out of frames to look in.
+/* @hassideeffects							Updates to data in `context`
+ * @param {!string}			variableName	The name of the variable/attribute to lookup.
+ * @param {!Array.<Frame>}	context			The context to resolve references in.
+ * @return {?Object}						The value of the fully-resolved reference.
+ */
 function resolveValueOfTemplateVariable(variableName, context) {
 	// @{name}		==> context[min(0,context.length-1)].lookup(name)
 	// @{.name}		==> context[min(0,context.length-1)].lookup(name)
@@ -719,9 +786,22 @@ function resolveValueOfTemplateVariable(variableName, context) {
 	return undefined;
 }
 
+/* @nosideeffects
+ * @param		{?Frame}		frame	The frame to put into the context.
+ * @return		{Array.<Frame>}			The new Context.
+ */
 function newContext(frame) { return [frame]; }
+
+/* @nosideeffects
+ * @return		{Array.<Frame>}			The new Context.
+ */
 function newEmptyContext() { return [new Frame(null, {})]; }
 
+/* @nosideeffects
+ * @param		{?Frame}		that	The frame to copy.
+ * @param		{?Object}		model	The current model object for the new frame.
+ * @constructor @final
+ */
 function Frame(that, model) {
 	if(that !== undefined && typeof(that) === 'object') {
 		// this is the "copy constructor"
@@ -758,6 +838,10 @@ function Frame(that, model) {
 	};
 }
 
+/* @nosideeffects
+ * @param {!Object|!string|!number} objectOrNameOrId
+ * @return {?Object}
+ */
 function resolve(objectOrNameOrId) {
 	return (typeof(objectOrNameOrId) !== 'string'
 			? objectOrNameOrId									// its already an object
@@ -766,10 +850,10 @@ function resolve(objectOrNameOrId) {
 			   : document.getElementById(objectOrNameOrId)))	// object is stored by its name but it is shadowed by an earlier JavaScript global so we have to treat the name as its ID
 };
 
-Object.defineProperty(Number.prototype, '$',	{ get: function() { return conditionalPluralSuffix(this.valueOf()); } });
-Object.defineProperty(Array.prototype, '$',		{ get: function() { return conditionalPluralSuffix(this.length); } });
-Object.defineProperty(Array.prototype, '#',		{ get: function() { return this.length; } });
-Object.defineProperty(Array.prototype, 'size',	{ get: function() { return this.length; } });
+Object.defineProperty(Number.prototype, '$',	{ get: /* @nosideeffects */ function() { return conditionalPluralSuffix(this.valueOf()); } });
+Object.defineProperty(Array.prototype, '$',		{ get: /* @nosideeffects */ function() { return conditionalPluralSuffix(this.length); } });
+Object.defineProperty(Array.prototype, '#',		{ get: /* @nosideeffects */ function() { return this.length; } });
+Object.defineProperty(Array.prototype, 'size',	{ get: /* @nosideeffects */ function() { return this.length; } });
 Array.prototype.removeAll = function(obj) {		// Remove all instances of 'obj' from the array
 	for(var i = this.indexOf(obj); i >= 0; i = this.indexOf(obj)) {
 		this.splice(i, 1);
@@ -781,6 +865,9 @@ Array.prototype.push$ = function(obj) { if(this.indexOf(obj) < 0) { this.push(ob
 ////////////////////////////////////////////////////////////////////////////////
 // Localization functions.
 //TODO//
+/* @nosideeffects
+ * @param {?number} n
+ */
 function conditionalPluralSuffix(n) {
 	return (n !== undefined && n != 1 ? 's' : '');
 	// Yes, in English, conditionalPluralize(0, 'cat') is probably 'cats'.
@@ -790,6 +877,9 @@ function conditionalPluralSuffix(n) {
 	// "there is 0 cat in the bag".
 }
 
+/* @nosideeffects
+ * @param {!string} str
+ */
 function pluralFormOf(str) {
 	return str + 's';
 }
