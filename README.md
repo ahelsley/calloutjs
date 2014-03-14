@@ -168,12 +168,12 @@ Some references to variables are actually common transformations of model-attrib
 		</tr>
 	</thead>
 	<tbody>
-	<tr><td><code>@{<var>[<kbd>NAME</kbd>.]</var>$}</code></td><td>pluralize iff NAME references a collection with more than 1 item</td></tr>
-	<tr><td><code>@{<var>[<kbd>NAME</kbd>.]</var>@}</code></td><td>the number in the collection which NAME is currently processing</td></tr>
-	<tr><td><code>@{<var>[<kbd>NAME</kbd>.]</var>#}</code></td><td>the size in the collection NAME (length or Object.keys(NAME).length)</td></tr>
-	<tr><td><code>@{<var>[<kbd>NAME</kbd>.]</var>,}</code></td><td>delimit if current object is not the last or only object of its collection</td></tr>
-	<tr><td><code>@{<var>[<kbd>NAME</kbd>.]</var>=}</code></td><td>the unquoted form of the value</td></tr>
-	<tr><td><code>@{=JSEXPR}</code></td><td></td></tr>
+	<tr><td><code style="display:inline;overflow:hidden;">@{<var>[<kbd>NAME</kbd>.]</var>$}</code></td><td>pluralize iff NAME references a collection with more than 1 item</td></tr>
+	<tr><td><code style="display:inline;overflow:hidden;">@{<var>[<kbd>NAME</kbd>.]</var>@}</code></td><td>the number in the collection which NAME is currently processing</td></tr>
+	<tr><td><code style="display:inline;overflow:hidden;">@{<var>[<kbd>NAME</kbd>.]</var>#}</code></td><td>the size in the collection NAME (length or Object.keys(NAME).length)</td></tr>
+	<tr><td><code style="display:inline;overflow:hidden;">@{<var>[<kbd>NAME</kbd>.]</var>,}</code></td><td>delimit if current object is not the last or only object of its collection</td></tr>
+	<tr><td><code style="display:inline;overflow:hidden;">@{<var>[<kbd>NAME</kbd>.]</var>=}</code></td><td>the unquoted form of the value</td></tr>
+	<tr><td><code style="display:inline;overflow:hidden;">@{=JSEXPR}</code></td><td></td></tr>
 	<tr><td colspan="2">//TODO// indefinite article?</td></tr>
 	</tbody>
 </table>
@@ -188,9 +188,9 @@ For the purposes of iteration with `<... foreach= ... in= ...>` , the sigils `*`
 		</tr>
 	</thead>
 	<tbody>
-	<tr><td><code>*<var>[<kbd>NAME</kbd>.]</var></code></td><td>Extract object-property values into an array.</td></tr>
-	<tr><td><code>^<var>[<kbd>NAME</kbd>.]</var></code></td><td>Extract object-property names and values into an array of `{name:..., value:...}` pairs.</td></tr>
-	<tr><td><code>$<var>[<kbd>NAME</kbd>.]</var></code></td><td>`$`ort</td></tr>
+	<tr><td><code style="display:inline;overflow:hidden;">*<var>[<kbd>NAME</kbd>.]</var></code></td><td>Extract object-property values into an array.</td></tr>
+	<tr><td><code style="display:inline;overflow:hidden;">^<var>[<kbd>NAME</kbd>.]</var></code></td><td>Extract object-property names and values into an array of `{name:..., value:...}` pairs.</td></tr>
+	<tr><td><code style="display:inline;overflow:hidden;">$<var>[<kbd>NAME</kbd>.]</var></code></td><td>`$`ort</td></tr>
 	</tbody>
 </table>
 
