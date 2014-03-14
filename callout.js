@@ -17,7 +17,7 @@
  * @param {?Array.<Frame>=}	context			The PARENT context to resolve references in.  Top-level invocations can/should leave this null or un-specified.
  * @return {Array.<Node>}					An array of views of collection items.
  */
-HTMLElement.prototype.instantiate = function(template, collection, context) {
+HTMLElement.prototype["instantiate"] = function(template, collection, context) {
 	var instances = instantiateTemplate(template, collection, context, this);
 	invokeLoadHandlers(instances);
 	return instances;
@@ -833,6 +833,7 @@ function Frame(that, model) {
 				 || (this.cache[name] = this.explicit[name]));
 	};
 }
+window["Frame"] = Frame;
 
 /**@param {!Object|!string|!number} objectOrNameOrId
  * @return {?Object}
@@ -845,17 +846,17 @@ function resolve(objectOrNameOrId) {
 			   : document.getElementById(objectOrNameOrId)))	// object is stored by its name but it is shadowed by an earlier JavaScript global so we have to treat the name as its ID
 };
 
-Object.defineProperty(Number.prototype, '$',	{ get: function() { return conditionalPluralSuffix(this.valueOf()); } });
-Object.defineProperty(Array.prototype, '$',		{ get: function() { return conditionalPluralSuffix(this.length); } });
-Object.defineProperty(Array.prototype, '#',		{ get: function() { return this.length; } });
-Object.defineProperty(Array.prototype, 'size',	{ get: function() { return this.length; } });
-Array.prototype.removeAll = function(obj) {		// Remove all instances of 'obj' from the array
+Object.defineProperty(Number.prototype, '$',	{ get: /** @this {number} */ function() { return conditionalPluralSuffix(this.valueOf()); } });
+Object.defineProperty(Array.prototype, '$',		{ get: /** @this {Array}  */ function() { return conditionalPluralSuffix(this.length); } });
+Object.defineProperty(Array.prototype, '#',		{ get: /** @this {Array}  */ function() { return this.length; } });
+Object.defineProperty(Array.prototype, 'size',	{ get: /** @this {Array}  */ function() { return this.length; } });
+Array.prototype["removeAll"] = function(obj) {		// Remove all instances of 'obj' from the array
 	for(var i = this.indexOf(obj); i >= 0; i = this.indexOf(obj)) {
 		this.splice(i, 1);
 	}
 };
 
-Array.prototype.push$ = function(obj) { if(this.indexOf(obj) < 0) { this.push(obj); } };
+Array.prototype["push$"] = function(obj) { if(this.indexOf(obj) < 0) { this.push(obj); } };
 
 ////////////////////////////////////////////////////////////////////////////////
 // Localization functions.
