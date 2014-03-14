@@ -13,7 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Invocation style:	parent.instantiate(template, collection, ...);
 /**@param {!Node}			template		The template to instantiate.
- * @param {!Array|!Object}	collection		The collection to iterate over.
+ * @param {?Array|?Object=}	collection		The collection to iterate over.
  * @param {?Array.<Frame>=}	context			The PARENT context to resolve references in.  Top-level invocations can/should leave this null or un-specified.
  * @return {Array.<Node>}					An array of views of collection items.
  */
@@ -26,9 +26,9 @@ HTMLElement.prototype["instantiate"] = function(template, collection, context) {
 ////////////////////////////////////////////////////////////////////////////////
 // Invocation style:	var i = new TemplateInstances(template, collection, ...);
 /**@param {!Node}			template		The template to instantiate.
- * @param {!Array|!Object}	collection		The collection to iterate over.
- * @param {?Array.<Frame>}	context			The PARENT context to resolve references in.  Top-level invocations can/should leave this null or un-specified.
- * @param {!Node}			parentView		The view to append template instances (views) to.
+ * @param {?Array|?Object=}	collection		The collection to iterate over.
+ * @param {?Array.<Frame>=}	context			The PARENT context to resolve references in.  Top-level invocations can/should leave this null or un-specified.
+ * @param {?Node=}			parentView		The view to append template instances (views) to.
  * @return {Array.<Node>}					An array of views of collection items.
  */
 function TemplateInstances(template, collection, context, parentView) {
