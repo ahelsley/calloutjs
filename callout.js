@@ -34,6 +34,7 @@ HTMLElement.prototype["instantiate"] = function(template, collection, context) {
 function TemplateInstances(template, collection, context, parentView) {
 	return parentView.instantiate(template, collection, context);
 }
+window["TemplateInstances"] = TemplateInstances;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Instantiate a template 0 or more times using the specified collection of
@@ -159,6 +160,7 @@ function instantiateTemplate(template, collection, context, parentView, do_not_r
 
 	return instances;
 }
+window["instantiateTemplate"] = instantiateTemplate;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Create an instance of a template and its sub-templates using the data in
@@ -254,6 +256,7 @@ function instantiateTemplateOnce(template, model, context, collection, n) {
 
 	return instance;
 }
+window["instantiateTemplateOnce"] = instantiateTemplateOnce;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Remove all of the things that cause an instance to be hidden as a template.
@@ -268,6 +271,7 @@ function revealInstance(instance) {
 	instance.removeAttribute('to');
 	instance.className = instance.className.replace(/\btemplate\b/g,' ').trim();
 }
+window["revealInstance"] = revealInstance;
 
 // Append instances of a template to a view.  Returns a count of the number
 // appended.
@@ -290,6 +294,7 @@ function appendInstances(instances, parentView, reveal_p) {
 	}
 	return i;
 }
+window["appendInstances"] = appendInstances;
 
 // An event handler that should be called whenever a view's model data is changed
 /**@this {!Node} The view object which had its model change. */
@@ -312,6 +317,7 @@ function onModelChange() {
 		this.parentNode.replaceChild(newInstance, this);
 	}
 }
+window["onModelChange"] = onModelChange;
 
 /**@param {!Object} model The model object that changed. */
 function sendModelChange(model) {
@@ -325,6 +331,7 @@ function sendModelChange(model) {
 		}
 	}
 }
+window["sendModelChange"] = sendModelChange;
 
 ////////////////////////////////////////////////////////////////////////////////
 //						 ____       _            _
@@ -810,10 +817,10 @@ function Frame(that, model) {
 	this.cache		= {};						// setup by instantiateTemplateOnce
 	this.explicit	= this.explicit||{};		// setup by instantiateTemplate
 	this.model		= this.model||model;
-	this.template	= this.template;			// setup by instantiateTemplateOnce
+/*(	this.template	= this.template;			// setup by instantiateTemplateOnce
 	this.instance	= this.instance;			// setup by instantiateTemplateOnce
 	this.collection	= this.collection;			// setup by instantiateTemplate
-	this.n			= this.n;					// setup by instantiateTemplate
+	this.n			= this.n;				)*/	// setup by instantiateTemplate
 	this.lookup		= function(name) {
 		if(name === undefined) {
 			return undefined;
