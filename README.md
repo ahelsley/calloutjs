@@ -8,8 +8,8 @@ Features:
  -	Dynamic creation of DOM objects
  -	Relative, absolute, named, implicit, and direct [styles for references](#refstyles) to model attributes
  -	Retains references to the [template](#template)s that [instance](#instance)s are created from
- -	Retains of references to [model](#model) objects (bare JS Objects) in the view
- -	Retains of references to [view](#view) instances from the model objects
+ -	Retains references to [model](#model) objects (bare JS Objects) in the view
+ -	Retains references to [view](#view) instances from the model objects
  -	Recursive template invocation via `<... reapply= ...>`.  Name the template to be `<... reapply= ...>`d...
  	- ... explicitly
  	- ... indirectly (using "relative" names, i.e.: `<... reapply=".." ...>`)
@@ -60,7 +60,7 @@ Example 2:
 Example 3:
 ----------
  -	JSON (model):
- >		var artists = [{
+ >		var theArtists = [{
  >			first_name:	'Elvis', last_name: 'Presley',
  >			albums: {
  >				'Pot Luck': {
@@ -102,7 +102,7 @@ Example 3:
  >		</ul>
 
  -	Javascript initialization:
- >		instantiateTemplate(tc.querySelector('li'), null, artists);
+ >		instantiateTemplate(tc.querySelector('li'), null, theArtists);
 
 ### Naming:
 
@@ -117,7 +117,7 @@ Notice the conventions for associating JSON data with templates:
 	refer to each object from the collection as it is populating an
 	instance.  This name is visible in the context of sub-templates so
 	they can easily refer to parent-model values without resorting to
-	lots of dots.  These names are silently shadowed by names of the
+	lots of dots.  *WARNING*: These names are silently shadowed by names of the
 	current object being used to populate a template instance if there
 	is a conflicting name in use.
 
@@ -125,15 +125,16 @@ Notice the conventions for associating JSON data with templates:
 
  -	The {`in`,`of`} attribute determines which named-collection from the
 	"current" object gets iterated, whether that amounts to an object
-	or array.
+	or array.  It can be explicitly overridden in the call to `instantiate...`
+	(see `Javascript initialization` for [Example 3](#example-3)).
 
  -	By default, the global object serves as the "frame" object for the
 	first template use.  In web browsers, this is the "window" object,
 	where all global variables are defined.
 
-Notice in [Example 3](#example-3) above the ways in which model-values can be referenced
-with variable names.  Here is a table of the names we are assigning to these
-methods, the example that illustrates their use, and a description of how
+Notice in [Example 3](#example-3) above the many ways in which model-values can be
+referenced with variable names.  Here is a table of the names we are assigning to
+these methods, the example that illustrates their use, and a description of how
 they get resolved into a value:
 
 <a name="refstyles"></a>
@@ -168,12 +169,12 @@ Some references to variables are actually common transformations of model-attrib
 		</tr>
 	</thead>
 	<tbody>
-	<tr><td><code style="display:inline;overflow:hidden;">@{<var>[<kbd>NAME</kbd>.]</var>$}</code></td><td>pluralize iff NAME references a collection with more than 1 item</td></tr>
-	<tr><td><code style="display:inline;overflow:hidden;">@{<var>[<kbd>NAME</kbd>.]</var>@}</code></td><td>the number in the collection which NAME is currently processing</td></tr>
-	<tr><td><code style="display:inline;overflow:hidden;">@{<var>[<kbd>NAME</kbd>.]</var>#}</code></td><td>the size in the collection NAME (length or Object.keys(NAME).length)</td></tr>
-	<tr><td><code style="display:inline;overflow:hidden;">@{<var>[<kbd>NAME</kbd>.]</var>,}</code></td><td>delimit if current object is not the last or only object of its collection</td></tr>
-	<tr><td><code style="display:inline;overflow:hidden;">@{<var>[<kbd>NAME</kbd>.]</var>=}</code></td><td>the unquoted form of the value</td></tr>
-	<tr><td><code style="display:inline;overflow:hidden;">@{=JSEXPR}</code></td><td></td></tr>
+	<tr><td><code style="display:inline;overflow:visible;">@{<var>[<kbd>NAME</kbd>.]</var>$}</code></td><td>pluralize iff NAME references a collection with more than 1 item</td></tr>
+	<tr><td><code style="display:inline;overflow:visible;">@{<var>[<kbd>NAME</kbd>.]</var>@}</code></td><td>the number in the collection which NAME is currently processing</td></tr>
+	<tr><td><code style="display:inline;overflow:visible;">@{<var>[<kbd>NAME</kbd>.]</var>#}</code></td><td>the size in the collection NAME (length or Object.keys(NAME).length)</td></tr>
+	<tr><td><code style="display:inline;overflow:visible;">@{<var>[<kbd>NAME</kbd>.]</var>,}</code></td><td>delimit if current object is not the last or only object of its collection</td></tr>
+	<tr><td><code style="display:inline;overflow:visible;">@{<var>[<kbd>NAME</kbd>.]</var>=}</code></td><td>the unquoted form of the value</td></tr>
+	<tr><td><code style="display:inline;overflow:visible;">@{=JSEXPR}</code></td><td></td></tr>
 	<tr><td colspan="2">//TODO// indefinite article?</td></tr>
 	</tbody>
 </table>
@@ -188,9 +189,9 @@ For the purposes of iteration with `<... foreach= ... in= ...>` , the sigils `*`
 		</tr>
 	</thead>
 	<tbody>
-	<tr><td><code style="display:inline;overflow:hidden;">*<var>[<kbd>NAME</kbd>.]</var></code></td><td>Extract object-property values into an array.</td></tr>
-	<tr><td><code style="display:inline;overflow:hidden;">^<var>[<kbd>NAME</kbd>.]</var></code></td><td>Extract object-property names and values into an array of `{name:..., value:...}` pairs.</td></tr>
-	<tr><td><code style="display:inline;overflow:hidden;">$<var>[<kbd>NAME</kbd>.]</var></code></td><td>`$`ort</td></tr>
+	<tr><td><code style="display:inline;overflow:visible;">*<var>[<kbd>NAME</kbd>.]</var></code></td><td>Extract object-property values into an array.</td></tr>
+	<tr><td><code style="display:inline;overflow:visible;">^<var>[<kbd>NAME</kbd>.]</var></code></td><td>Extract object-property names and values into an array of `{name:..., value:...}` pairs.</td></tr>
+	<tr><td><code style="display:inline;overflow:visible;">$<var>[<kbd>NAME</kbd>.]</var></code></td><td>`$`ort</td></tr>
 	</tbody>
 </table>
 
